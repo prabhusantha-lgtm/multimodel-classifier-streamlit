@@ -1,7 +1,7 @@
 """
 train_models.py
 ================
-Trains six classification models on the Breast Cancer Wisconsin (Diagnostic)
+Trains five classification models on the Breast Cancer Wisconsin (Diagnostic)
 dataset and persists everything the Streamlit app needs.
 
 Dataset : UCI Breast Cancer Wisconsin (Diagnostic)
@@ -54,7 +54,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
-from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
 SEED = 42
@@ -71,14 +70,13 @@ def load_dataset():
 
 
 def build_models():
-    """The six classifiers required by the assignment."""
+    """The five classifiers required by the assignment."""
     return {
         "Logistic Regression": LogisticRegression(max_iter=5000, random_state=SEED),
         "Decision Tree": DecisionTreeClassifier(max_depth=6, random_state=SEED),
         "kNN": KNeighborsClassifier(n_neighbors=7),
         "Naive Bayes": GaussianNB(),
         "Random Forest": RandomForestClassifier(n_estimators=300, random_state=SEED),
-        "SVM": SVC(kernel="rbf", probability=True, random_state=SEED),
     }
 
 
@@ -103,7 +101,6 @@ FILE_STEMS = {
     "kNN": "knn",
     "Naive Bayes": "naive_bayes",
     "Random Forest": "random_forest",
-    "SVM": "svm",
 }
 
 

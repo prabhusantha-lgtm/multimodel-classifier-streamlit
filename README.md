@@ -30,8 +30,8 @@ and MCC are watched alongside accuracy.
   (455 train / 114 test rows). `test_data.csv` in this repo is exactly that
   114-row held-out test split (original unscaled features + true `target`).
 - **Preprocessing:** a single `StandardScaler` fitted on the training split and
-  reused everywhere. Linear, distance- and kernel-based models (LR, kNN, NB, SVM)
-  need it; tree-based models are scale-invariant and are unaffected by it.
+  reused everywhere. Linear and distance-based models (LR, kNN, NB) need it;
+  tree-based models are scale-invariant and are unaffected by it.
 
 ## c. GitHub repository link
 
@@ -39,9 +39,9 @@ https://github.com/prabhusantha-lgtm/multimodel-classifier-streamlit
 
 ## d. Models used
 
-Six classifiers were trained on the same dataset and evaluated on the 114-row
-held-out test set. (The assignment lists five core models — Logistic Regression,
-Decision Tree, kNN, Naive Bayes, Random Forest — and SVM is included as a sixth.)
+Five classifiers were trained on the same dataset and evaluated on the 114-row
+held-out test set: Logistic Regression, Decision Tree, kNN, Naive Bayes and
+Random Forest (ensemble).
 
 ### Comparison table
 
@@ -52,7 +52,6 @@ Decision Tree, kNN, Naive Bayes, Random Forest — and SVM is included as a sixt
 | kNN | 0.9737 | 0.9884 | 0.9600 | 1.0000 | 0.9796 | 0.9442 |
 | Naive Bayes | 0.9298 | 0.9868 | 0.9444 | 0.9444 | 0.9444 | 0.8492 |
 | Random Forest (Ensemble) | 0.9474 | 0.9937 | 0.9583 | 0.9583 | 0.9583 | 0.8869 |
-| SVM (RBF) | 0.9825 | 0.9950 | 0.9861 | 0.9861 | 0.9861 | 0.9623 |
 
 *Metrics are computed on the test set; AUC uses predicted class-1 probabilities.*
 
@@ -65,8 +64,7 @@ Decision Tree, kNN, Naive Bayes, Random Forest — and SVM is included as a sixt
 | kNN | Very strong (Acc 0.974, MCC 0.944) with **perfect recall (1.000)** — it misses no benign cases. Slightly lower precision (0.960) means a few malignant cases are called benign; scaling is essential here since kNN relies on Euclidean distance. |
 | Naive Bayes | Solid AUC (0.987) but lower accuracy/MCC (0.930 / 0.849). Its feature-independence assumption is violated — the "mean / SE / worst" versions of each measurement are highly correlated — which caps its point-prediction quality even though the ranking of probabilities stays good. |
 | Random Forest (Ensemble) | Robust and well-calibrated (AUC 0.994) with balanced precision/recall (0.958). The ensemble fixes the single tree's variance problem, but on this fairly linear dataset it is narrowly out-performed by the linear models. |
-| SVM (RBF) | Ties Logistic Regression for the best result (Acc 0.982, MCC 0.962). The RBF kernel with standardised inputs captures the (near-linear) boundary cleanly and generalises just as well as LR. |
-| **Overall winner for this dataset?** | **Logistic Regression** — highest accuracy, AUC, F1 and MCC among the five required models (tied on every metric by SVM). It is also the simplest, fastest and most interpretable of the top performers, which makes it the natural choice for this near-linearly-separable dataset. |
+| **Overall winner for this dataset?** | **Logistic Regression** — highest accuracy, AUC, F1 and MCC of the five models. It is also the simplest, fastest and most interpretable of the top performers, which makes it the natural choice for this near-linearly-separable dataset. |
 
 ## Repository structure
 
@@ -83,7 +81,6 @@ bits-ml-a2/
     ├── knn.pkl
     ├── naive_bayes.pkl
     ├── random_forest.pkl
-    ├── svm.pkl
     ├── scaler.pkl             # StandardScaler fitted on the training split
     ├── feature_names.json     # ordered feature columns the app expects
     └── metrics.csv            # comparison table (source of the table above)

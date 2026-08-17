@@ -39,7 +39,6 @@ MODEL_FILES = {
     "kNN": "knn.pkl",
     "Naive Bayes": "naive_bayes.pkl",
     "Random Forest": "random_forest.pkl",
-    "SVM": "svm.pkl",
 }
 
 st.set_page_config(
@@ -85,7 +84,6 @@ def _retrain_fallback():
     from sklearn.naive_bayes import GaussianNB
     from sklearn.neighbors import KNeighborsClassifier
     from sklearn.preprocessing import StandardScaler
-    from sklearn.svm import SVC
     from sklearn.tree import DecisionTreeClassifier
 
     seed = 42
@@ -104,7 +102,6 @@ def _retrain_fallback():
         "kNN": KNeighborsClassifier(n_neighbors=7),
         "Naive Bayes": GaussianNB(),
         "Random Forest": RandomForestClassifier(n_estimators=300, random_state=seed),
-        "SVM": SVC(kernel="rbf", probability=True, random_state=seed),
     }
     models = {n: m.fit(X_tr_s, y_tr) for n, m in specs.items()}
     return scaler, features, "target", models, "retrained"
@@ -127,7 +124,7 @@ def compute_metrics(model, X_scaled, y_true):
 st.title("🩺 Multi-Model Classifier Explorer")
 st.caption(
     "Breast Cancer Wisconsin (Diagnostic) · 30 features · binary classification "
-    "· Logistic Regression · Decision Tree · kNN · Naive Bayes · Random Forest · SVM"
+    "· Logistic Regression · Decision Tree · kNN · Naive Bayes · Random Forest"
 )
 
 scaler, feature_cols, target_col, models, source = load_artifacts()
