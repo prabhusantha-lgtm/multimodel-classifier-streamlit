@@ -1,38 +1,3 @@
-"""
-train_models.py
-================
-Trains five classification models on the Breast Cancer Wisconsin (Diagnostic)
-dataset and persists everything the Streamlit app needs.
-
-Dataset : UCI Breast Cancer Wisconsin (Diagnostic)
-          30 numeric features, 569 instances, binary target
-          (0 = malignant, 1 = benign). Ships inside scikit-learn, so no
-          download is required.
-
-Run     : python model/train_models.py     (from the repo root)
-
-Outputs (written into the model/ folder):
-    logistic_regression.pkl, decision_tree.pkl, knn.pkl,
-    naive_bayes.pkl, random_forest.pkl, svm.pkl
-    scaler.pkl              -> StandardScaler fitted on the training split
-    feature_names.json      -> ordered feature columns the app expects
-    metrics.csv             -> comparison table used in the README
-    ../test_data.csv        -> held-out test split (unscaled features + target)
-
-----------------------------------------------------------------------------
-SWAP IN YOUR OWN DATASET
-----------------------------------------------------------------------------
-Only load_dataset() is dataset-specific. To use a Kaggle / UCI CSV instead,
-replace its body with something like:
-
-    df = pd.read_csv("your_file.csv")
-    target = "your_label_column"
-    return df, target
-
-Everything downstream (scaling, training, metrics, persistence) is generic and
-works for any binary classification frame with >= 12 numeric features.
-"""
-
 import json
 from pathlib import Path
 
@@ -93,8 +58,6 @@ def score_model(model, X, y_true):
         "MCC": matthews_corrcoef(y_true, y_pred),
     }
 
-
-# filename stem used when persisting each model
 FILE_STEMS = {
     "Logistic Regression": "logistic_regression",
     "Decision Tree": "decision_tree",
@@ -117,8 +80,6 @@ def main():
         X, y, test_size=0.20, stratify=y, random_state=SEED
     )
 
-    # Scale once; tree-based models are scale-invariant so a single uniform
-    # scaler keeps the app trivially simple without hurting them.
     scaler = StandardScaler().fit(X_train)
     X_train_s = scaler.transform(X_train)
     X_test_s = scaler.transform(X_test)
@@ -132,7 +93,6 @@ def main():
         print(f"  trained {name:<20} acc={metrics['Accuracy']:.4f} "
               f"auc={metrics['AUC']:.4f} mcc={metrics['MCC']:.4f}")
 
-    # Persist scaler + feature order for the app
     joblib.dump(scaler, HERE / "scaler.pkl")
     (HERE / "feature_names.json").write_text(
         json.dumps({"target": target_col, "features": feature_cols}, indent=2)
@@ -142,8 +102,6 @@ def main():
     metrics_df = pd.DataFrame(rows).round(4)
     metrics_df.to_csv(HERE / "metrics.csv", index=False)
 
-    # Held-out test set (original, UNSCALED features + true label) — this is
-    # the file the grader / Streamlit app uploads.
     test_df = pd.DataFrame(X_test, columns=feature_cols)
     test_df[target_col] = y_test
     test_df.to_csv(REPO_ROOT / "test_data.csv", index=False)

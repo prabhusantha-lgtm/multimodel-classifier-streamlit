@@ -1,43 +1,34 @@
 # Multi-Model Classifier Explorer — Breast Cancer Wisconsin (Diagnostic)
 
-BITS WILP · M.Tech (AIML / DSE) · Machine Learning · Assignment 2
-
-An end-to-end classification workflow: six models trained on a real diagnostic
+An end-to-end classification workflow: five models trained on a real diagnostic
 dataset, evaluated on six metrics, and served through an interactive Streamlit
 app deployed on Streamlit Community Cloud.
 
----
-
-## a. Problem statement
+## 1. Problem statement
 
 Given 30 numeric measurements computed from digitised images of fine-needle
 aspirates of breast masses, classify each tumour as **malignant (0)** or
 **benign (1)**. This is a binary classification problem where minimising false
-negatives (calling a malignant tumour benign) is especially important, so recall
-and MCC are watched alongside accuracy.
+negatives (calling a malignant tumour benign) matters most, so recall and MCC
+are watched alongside accuracy.
 
-## b. Dataset description
+## 2. Dataset description
 
-- **Source:** Breast Cancer Wisconsin (Diagnostic) — UCI Machine Learning
-  Repository (also distributed inside scikit-learn as `load_breast_cancer`).
-- **Instances:** 569 (≥ 500 required ✔)
-- **Features:** 30 continuous features (≥ 12 required ✔) — mean, standard error,
-  and "worst" values of ten cell-nucleus properties (radius, texture, perimeter,
-  area, smoothness, compactness, concavity, concave points, symmetry, fractal
-  dimension).
+- **Source:** Breast Cancer Wisconsin (Diagnostic) — UCI Machine Learning Repository
+- **Instances:** 569 (≥ 500 required)
+- **Features:** 30 continuous (≥ 12 required) — ten cell-nucleus properties
+  (radius, texture, perimeter, area, smoothness, compactness, concavity,
+  concave points, symmetry, fractal dimension), each reported as mean, standard
+  error and "worst" value.
 - **Target:** binary — `0 = malignant` (212 cases), `1 = benign` (357 cases).
 - **Train / test split:** 80 / 20, stratified, `random_state = 42`
-  (455 train / 114 test rows). `test_data.csv` in this repo is exactly that
-  114-row held-out test split (original unscaled features + true `target`).
-- **Preprocessing:** a single `StandardScaler` fitted on the training split and
-  reused everywhere. Linear and distance-based models (LR, kNN, NB) need it;
-  tree-based models are scale-invariant and are unaffected by it.
+  (455 train / 114 test). `test_data.csv` is the 114-row held-out test split.
 
-## c. GitHub repository link
+## 3. GitHub repository link
 
 https://github.com/prabhusantha-lgtm/multimodel-classifier-streamlit
 
-## d. Models used
+## 4. Models used
 
 Five classifiers were trained on the same dataset and evaluated on the 114-row
 held-out test set: Logistic Regression, Decision Tree, kNN, Naive Bayes and
@@ -59,23 +50,23 @@ Random Forest (ensemble).
 
 | ML Model Name | Observation about model performance |
 |---|---|
-| Logistic Regression | Top performer (Acc 0.982, AUC 0.995, MCC 0.962). After standardisation the two classes are close to linearly separable, so a linear decision boundary fits almost perfectly with balanced precision and recall and no overfitting. |
-| Decision Tree | Weakest model (Acc 0.912, MCC 0.817) and the lowest AUC (0.915). A single tree has high variance and makes hard axis-aligned splits, so its probability estimates are coarse — reflected in the poor AUC despite a respectable accuracy. |
-| kNN | Very strong (Acc 0.974, MCC 0.944) with **perfect recall (1.000)** — it misses no benign cases. Slightly lower precision (0.960) means a few malignant cases are called benign; scaling is essential here since kNN relies on Euclidean distance. |
-| Naive Bayes | Solid AUC (0.987) but lower accuracy/MCC (0.930 / 0.849). Its feature-independence assumption is violated — the "mean / SE / worst" versions of each measurement are highly correlated — which caps its point-prediction quality even though the ranking of probabilities stays good. |
-| Random Forest (Ensemble) | Robust and well-calibrated (AUC 0.994) with balanced precision/recall (0.958). The ensemble fixes the single tree's variance problem, but on this fairly linear dataset it is narrowly out-performed by the linear models. |
-| **Overall winner for this dataset?** | **Logistic Regression** — highest accuracy, AUC, F1 and MCC of the five models. It is also the simplest, fastest and most interpretable of the top performers, which makes it the natural choice for this near-linearly-separable dataset. |
+| Logistic Regression | Best overall (Acc 0.982, AUC 0.995, MCC 0.962). Once the features are standardised the two classes are almost linearly separable, so a linear boundary fits well. Precision and recall stay balanced and there is no sign of overfitting. |
+| Decision Tree | Weakest model here (Acc 0.912, MCC 0.817) and the lowest AUC (0.915). A single tree is high-variance and splits on hard thresholds, so its probability estimates are coarse. That explains the poor AUC even though the accuracy is acceptable. |
+| kNN | Very strong (Acc 0.974, MCC 0.944) with perfect recall (1.000), so it misses no benign cases. Precision is slightly lower (0.960), meaning a few malignant cases get labelled benign. Scaling is essential here because kNN works on Euclidean distance. |
+| Naive Bayes | Good AUC (0.987) but lower accuracy and MCC (0.930 / 0.849). Its feature-independence assumption does not hold, since the mean, SE and worst versions of each measurement are strongly correlated. That caps the point predictions even though the probability ranking stays decent. |
+| Random Forest (Ensemble) | Robust and well-calibrated (AUC 0.994) with balanced precision and recall (0.958). The ensemble removes the single tree's variance problem, but on this near-linear dataset the linear models still edge it out. |
+| **Overall winner for this dataset?** | **Logistic Regression** — highest accuracy, AUC, F1 and MCC of the five, and also the simplest and most interpretable. A natural fit for a dataset that turns out to be close to linearly separable. |
 
 ## Repository structure
 
-```
+\`\`\`
 bits-ml-a2/
 ├── app.py                     # Streamlit application
 ├── requirements.txt
 ├── README.md
 ├── test_data.csv              # 114-row held-out test split (features + target)
 └── model/
-    ├── train_models.py        # trains all 6 models, writes metrics + artifacts
+    ├── train_models.py        # trains all 5 models, writes metrics + artifacts
     ├── logistic_regression.pkl
     ├── decision_tree.pkl
     ├── knn.pkl
@@ -84,20 +75,20 @@ bits-ml-a2/
     ├── scaler.pkl             # StandardScaler fitted on the training split
     ├── feature_names.json     # ordered feature columns the app expects
     └── metrics.csv            # comparison table (source of the table above)
-```
+\`\`\`
 
 ## How to run locally
 
-```bash
+\`\`\`bash
 pip install -r requirements.txt
 python model/train_models.py     # (re)generates models + test_data.csv
 streamlit run app.py
-```
+\`\`\`
 
 ## Streamlit app features
 
-- **CSV upload** of test data (or one click to use the bundled `test_data.csv`).
-- **Model selection dropdown** across all six models.
+- **CSV upload** of test data (or one click to use the bundled \`test_data.csv\`).
+- **Model selection dropdown** across all five models.
 - **Evaluation metrics** (Accuracy, AUC, Precision, Recall, F1, MCC) shown live
   for the selected model on the uploaded data.
 - **Confusion matrix** heatmap **and** full **classification report**.
@@ -105,10 +96,6 @@ streamlit run app.py
   best value per metric.
 - Downloadable predictions CSV.
 
-The app loads the saved `*.pkl` models; if a host has an incompatible
-scikit-learn version it transparently retrains from the bundled dataset so it
-never fails to render.
-
 ## Live Streamlit app link
 
-> **`<PASTE YOUR STREAMLIT APP URL HERE>`**
+https://multimodel-classifier-app-apcaudju5dpcfy3appwyksr.streamlit.app/
