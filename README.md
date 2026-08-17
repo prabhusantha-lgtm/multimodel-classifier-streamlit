@@ -40,9 +40,9 @@ Random Forest (ensemble).
 |---|---|---|---|---|---|---|
 | Logistic Regression | 0.9825 | 0.9954 | 0.9861 | 0.9861 | 0.9861 | 0.9623 |
 | Decision Tree | 0.9123 | 0.9147 | 0.9559 | 0.9028 | 0.9286 | 0.8174 |
-| kNN | 0.9737 | 0.9884 | 0.9600 | 1.0000 | 0.9796 | 0.9442 |
+| kNN | 0.9561 | 0.9788 | 0.9589 | 0.9722 | 0.9655 | 0.9054 |
 | Naive Bayes | 0.9298 | 0.9868 | 0.9444 | 0.9444 | 0.9444 | 0.8492 |
-| Random Forest (Ensemble) | 0.9474 | 0.9937 | 0.9583 | 0.9583 | 0.9583 | 0.8869 |
+| Random Forest (Ensemble) | 0.9561 | 0.9932 | 0.9589 | 0.9722 | 0.9655 | 0.9054 |
 
 *Metrics are computed on the test set; AUC uses predicted class-1 probabilities.*
 
@@ -52,50 +52,11 @@ Random Forest (ensemble).
 |---|---|
 | Logistic Regression | Best overall (Acc 0.982, AUC 0.995, MCC 0.962). Once the features are standardised the two classes are almost linearly separable, so a linear boundary fits well. Precision and recall stay balanced and there is no sign of overfitting. |
 | Decision Tree | Weakest model here (Acc 0.912, MCC 0.817) and the lowest AUC (0.915). A single tree is high-variance and splits on hard thresholds, so its probability estimates are coarse. That explains the poor AUC even though the accuracy is acceptable. |
-| kNN | Very strong (Acc 0.974, MCC 0.944) with perfect recall (1.000), so it misses no benign cases. Precision is slightly lower (0.960), meaning a few malignant cases get labelled benign. Scaling is essential here because kNN works on Euclidean distance. |
+| kNN | Strong overall (Acc 0.956, MCC 0.905) at k=5. Recall is 0.972 and precision 0.959, so a few cases go wrong in each direction — it no longer catches every benign case as it did at higher k. Scaling is essential here because kNN works on Euclidean distance. |
 | Naive Bayes | Good AUC (0.987) but lower accuracy and MCC (0.930 / 0.849). Its feature-independence assumption does not hold, since the mean, SE and worst versions of each measurement are strongly correlated. That caps the point predictions even though the probability ranking stays decent. |
-| Random Forest (Ensemble) | Robust and well-calibrated (AUC 0.994) with balanced precision and recall (0.958). The ensemble removes the single tree's variance problem, but on this near-linear dataset the linear models still edge it out. |
+| Random Forest (Ensemble) | Robust and well-calibrated (Acc 0.956, AUC 0.993). The ensemble removes the single tree's variance problem, but on this near-linear dataset the linear models still edge it out. |
 | **Overall winner for this dataset?** | **Logistic Regression** — highest accuracy, AUC, F1 and MCC of the five, and also the simplest and most interpretable. A natural fit for a dataset that turns out to be close to linearly separable. |
 
-## Repository structure
-
-\`\`\`
-bits-ml-a2/
-├── app.py                     # Streamlit application
-├── requirements.txt
-├── README.md
-├── test_data.csv              # 114-row held-out test split (features + target)
-└── model/
-    ├── train_models.py        # trains all 5 models, writes metrics + artifacts
-    ├── logistic_regression.pkl
-    ├── decision_tree.pkl
-    ├── knn.pkl
-    ├── naive_bayes.pkl
-    ├── random_forest.pkl
-    ├── scaler.pkl             # StandardScaler fitted on the training split
-    ├── feature_names.json     # ordered feature columns the app expects
-    └── metrics.csv            # comparison table (source of the table above)
-\`\`\`
-
-## How to run locally
-
-\`\`\`bash
-pip install -r requirements.txt
-python model/train_models.py     # (re)generates models + test_data.csv
-streamlit run app.py
-\`\`\`
-
-## Streamlit app features
-
-- **CSV upload** of test data (or one click to use the bundled \`test_data.csv\`).
-- **Model selection dropdown** across all five models.
-- **Evaluation metrics** (Accuracy, AUC, Precision, Recall, F1, MCC) shown live
-  for the selected model on the uploaded data.
-- **Confusion matrix** heatmap **and** full **classification report**.
-- A live **all-models comparison table** on the uploaded data, highlighting the
-  best value per metric.
-- Downloadable predictions CSV.
-
-## Live Streamlit app link
+## 5. Live Streamlit app link
 
 https://multimodel-classifier-app-apcaudju5dpcfy3appwyksr.streamlit.app/
