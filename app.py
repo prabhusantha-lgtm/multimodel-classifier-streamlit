@@ -146,7 +146,7 @@ if has_labels:
         st.write("**Confusion matrix**")
         cm = confusion_matrix(y, pred)
         fig, ax = plt.subplots(figsize=(4.2, 3.4))
-        sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False,
+        sns.heatmap(cm, annot=True, fmt="d", cmap="Greens", cbar=False,
                     xticklabels=["Pred 0", "Pred 1"],
                     yticklabels=["True 0", "True 1"], ax=ax)
         ax.set_xlabel("Predicted")
