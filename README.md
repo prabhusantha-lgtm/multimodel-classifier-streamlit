@@ -35,7 +35,7 @@ and MCC are watched alongside accuracy.
 
 ## c. GitHub repository link
 
-> **`<PASTE YOUR GITHUB REPO URL HERE>`**
+https://github.com/prabhusantha-lgtm/multimodel-classifier-streamlit
 
 ## d. Models used
 
