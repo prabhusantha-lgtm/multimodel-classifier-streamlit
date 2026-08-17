@@ -39,9 +39,9 @@ def build_models():
     return {
         "Logistic Regression": LogisticRegression(max_iter=5000, random_state=SEED),
         "Decision Tree": DecisionTreeClassifier(max_depth=6, random_state=SEED),
-        "kNN": KNeighborsClassifier(n_neighbors=7),
+        "kNN": KNeighborsClassifier(n_neighbors=5),
         "Naive Bayes": GaussianNB(),
-        "Random Forest": RandomForestClassifier(n_estimators=300, random_state=SEED),
+        "Random Forest": RandomForestClassifier(n_estimators=200, random_state=SEED),
     }
 
 
